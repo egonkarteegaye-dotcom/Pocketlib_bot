@@ -1,25 +1,22 @@
 import os
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import ApplicationBuilder, MessageHandler, filters
 
-BOT_TOKEN=os.getenv("BOT_TOKEN")
-DEST=os.getenv("DEST_CHANNEL")
+TOKEN = os.environ.get("BOT_TOKEN")
+DEST = int(os.environ.get("DEST_CHANNEL_ID", "0"))
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is Live!")
-
-async def get_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"Chat ID: {update.effective_chat.id}")
-
-async def forward_channel(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.channel_post:
+async def handle_all(update, context):
+    if update.channel_post and update.channel_post.chat_id != DEST:
         try:
             await context.bot.copy_message(chat_id=DEST, from_chat_id=update.channel_post.chat_id, message_id=update.channel_post.message_id)
         except:
             pass
 
-app=ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("id", get_id))
-app.add_handler(MessageHandler(filters.ALL, forward_channel))
-app.run_polling()
+    if update.message and update.message.text and update.message.text.startswith("/start"):
+        await update.message.reply_text("Bot is active!")
+
+if __name__ == "__main__":
+    if not TOKEN or not DEST:
+        raise ValueError("Missing BOT_TOKEN or DEST_CHANNEL_ID env")
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(MessageHandler(filters.ALL, handle_all))
+    app.run_polling(drop_pending_updates=True)
