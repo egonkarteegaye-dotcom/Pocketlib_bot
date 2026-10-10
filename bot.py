@@ -6,21 +6,19 @@ from flask import Flask
 
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHANNEL = os.getenv("CHANNEL_ID")
-bot = Bot(token=TOKEN) if TOKEN else Bot(token="8434602399:AAH-6K4m3K5a5a5a_REPLACE")
+bot = Bot(token=TOKEN)
 
 app = Flask(__name__)
 @app.route('/')
-def home():
-    return "GONKARTEE SON ROBOT LITE VIP LIVE"
+def home(): return "GONKARTEE SON ROBOT LITE VIP 🔥 💵 LIVE 90-95%"
 def run_web():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
 threading.Thread(target=run_web, daemon=True).start()
 
 PAIRS = ["EUR/USD (OTC)", "GBP/USD (OTC)", "USD/JPY (OTC)", "EUR/GBP (OTC)", "AUD/USD (OTC)", "EUR/JPY (OTC)", "GBP/JPY (OTC)", "USD/CAD (OTC)"]
 
 async def main():
-    print(f"GONKARTEE VIP STARTED FOR {CHANNEL}")
+    print(f"🔥 GONKARTEE SON ROBOT LITE VIP STARTED FOR {CHANNEL} - 90-95%")
     while True:
         try:
             now = datetime.now(pytz.utc)
