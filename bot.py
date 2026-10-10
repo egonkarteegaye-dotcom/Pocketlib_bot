@@ -4,28 +4,24 @@ from datetime import datetime, timedelta
 import pytz
 from telegram import Bot
 
-TELEGRAM_TOKEN = "YOUR_BOT_TOKEN_HERE"
-CHANNEL_ID = "@YOUR_CHANNEL_HERE"
+TELEGRAM_TOKEN = "YOUR_REAL_TOKEN_HERE"
+CHANNEL_ID = "@YOUR_REAL_CHANNEL_HERE"
 
-PAIRS = ["EUR/USD (OTC)","GBP/USD (OTC)","USD/JPY (OTC)","EUR/GBP (OTC)","AUD/JPY (OTC)","GBP/JPY (OTC)","EUR/JPY (OTC)","USD/CHF (OTC)","AUD/USD (OTC)","NZD/USD (OTC)"]
+PAIRS = ["EUR/USD (OTC)","GBP/USD (OTC)","USD/JPY (OTC)","EUR/GBP (OTC)","AUD/USD (OTC)","GBP/JPY (OTC)","EUR/JPY (OTC)","USD/CHF (OTC)","AUD/JPY (OTC)","NZD/USD (OTC)"]
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
 async def main():
-    print("FINAL BOT - +2 MIN EXACT + 90-92%")
     while True:
         now = datetime.now(pytz.utc)
-        entry = now + timedelta(minutes=2)  # EXACT +2 MIN
-        
+        entry = now + timedelta(minutes=2)
         signal_time = now.strftime('%H:%M:%S')
-        entry_time = entry.strftime('%H:%M:%S')  # NO :00, KEEP SECONDS
-        
+        entry_time = entry.strftime('%H:%M:%S')
+        accuracy = random.randint(90, 92)
+        expiry = random.randint(2, 5)
         pair = random.choice(PAIRS)
         direction = random.choice(["BUY 🟢 UP", "SELL 🔴 DOWN"])
-        accuracy = random.randint(90, 92)  # NEVER 87%
-        expiry = random.randint(2, 5)
         rsi = random.randint(24, 80)
-
         msg = f"""🔥 POCKET OPTION PREDICTION 🔥
 
 📩 SIGNAL RECEIVED: {signal_time} UTC
@@ -48,7 +44,7 @@ async def main():
 ━━━━━━━━━━━━━━
 GOLD ELITE VIP 🔥"""
         await bot.send_message(chat_id=CHANNEL_ID, text=msg)
-        print(f"✅ {signal_time} -> {entry_time} (+2min) {accuracy}%")
+        print(f"{signal_time} -> {entry_time} {accuracy}%")
         await asyncio.sleep(60)
 
 if __name__ == "__main__":
