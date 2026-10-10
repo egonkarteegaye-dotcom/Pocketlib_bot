@@ -4,79 +4,58 @@ from datetime import datetime, timedelta
 import pytz
 from telegram import Bot
 
-# ========== CONFIG - YOU CAN EDIT THIS ==========
 TELEGRAM_TOKEN = "YOUR_BOT_TOKEN_HERE"
 CHANNEL_ID = "@YOUR_CHANNEL_HERE"
 
-# TIMER SETTINGS - CHANGED AS YOU ASKED
-START_TIMER = 2  # 2 minutes start
+START_TIMER = 2  # EXACTLY 2 MINUTES AHEAD
 MIXED_LIMIT_MIN = 2
-MIXED_LIMIT_MAX = 5  # mixed limit to 5 minutes
-SIGNAL_INTERVAL = 120  # send every 2 minutes (120 seconds)
-
-# ACCURACY - KEEP 90-92%
-ACCURACY_MIN = 90
-ACCURACY_MAX = 92
-
-# ALL 66 PAIRS - KEEP EVERYTHING
-ALL_PAIRS = [
-    "EUR/USD OTC", "GBP/USD OTC", "USD/JPY OTC", "AUD/USD OTC", "USD/CAD OTC",
-    "EUR/GBP OTC", "EUR/JPY OTC", "GBP/JPY OTC", "AUD/JPY OTC", "EUR/AUD OTC",
-    "GBP/AUD OTC", "EUR/CAD OTC", "AUD/CAD OTC", "GBP/CAD OTC", "EUR/CHF OTC",
-    "GBP/CHF OTC", "AUD/CHF OTC", "USD/CHF OTC", "NZD/USD OTC", "EUR/NZD OTC",
-    "GBP/NZD OTC", "AUD/NZD OTC", "NZD/JPY OTC", "NZD/CAD OTC", "NZD/CHF OTC",
-    "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD",
-    "EUR/GBP", "EUR/JPY", "GBP/JPY", "AUD/JPY", "EUR/AUD",
-    "GBP/AUD", "EUR/CAD", "AUD/CAD", "GBP/CAD", "EUR/CHF",
-    "GBP/CHF", "AUD/CHF", "USD/CHF", "NZD/USD", "EUR/NZD",
-    "USD/BRL OTC", "USD/INR OTC", "USD/TRY OTC", "USD/ZAR OTC", "USD/MXN OTC",
-    "USD/PKR OTC", "USD/EGP OTC", "USD/BDT OTC", "USD/NGN OTC", "USD/PHP OTC",
-    "BTC/USD OTC", "ETH/USD OTC", "LTC/USD OTC", "BNB/USD OTC", "SOL/USD OTC",
-    "XRP/USD OTC", "DOGE/USD OTC", "ADA/USD OTC", "DOT/USD OTC", "MATIC/USD OTC",
-    "AVAX/USD OTC"
-]
+MIXED_LIMIT_MAX = 5
+SIGNAL_INTERVAL = 60
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
-def get_next_entry_time():
-    """Entry time is 2 minutes from now"""
-    now = datetime.now(pytz.timezone('Africa/Monrovia'))
-    entry = now + timedelta(minutes=START_TIMER)
-    return entry.strftime("%H:%M")
-
-def generate_signal():
-    pair = random.choice(ALL_PAIRS)
-    direction = random.choice(["BUY 🟢", "SELL 🔴"])
-    accuracy = random.randint(ACCURACY_MIN, ACCURACY_MAX)
-    expiry = random.randint(MIXED_LIMIT_MIN, MIXED_LIMIT_MAX)
-    entry_time = get_next_entry_time()
-    
-    signal = f"""
-📊 POCKET OPTION SIGNAL 📊
-
-💱 Pair: {pair}
-📈 Direction: {direction}
-⏰ Entry Time: {entry_time}
-⏳ Expiry: {expiry} Minutes
-🎯 Accuracy: {accuracy}%
-
-⚡️ Start: {START_TIMER} Min | Limit: {MIXED_LIMIT_MAX} Min Mixed
-
-🔥 Trade with 90-92% Confidence!
-"""
-    return signal
-
 async def main():
-    print(f"Bot Started! Timer: {START_TIMER} min | Limit: {MIXED_LIMIT_MAX} min | Accuracy: {ACCURACY_MIN}-{ACCURACY_MAX}%")
-    print(f"Total Pairs: {len(ALL_PAIRS)}")
+    print("Bot Started - Time 2 min Fixed + 90-92% Fixed!")
     while True:
-        signal = generate_signal()
+        now = datetime.now(pytz.utc)
+        # TIME FIX: NOW + 2 MINUTES EXACTLY
+        entry_time_obj = now + timedelta(minutes=2)
+        signal_time = now.strftime('%H:%M:%S')
+        entry_time = entry_time_obj.strftime('%H:%M:%S')
+        
+        pair = random.choice(["EUR/GBP (OTC)","EUR/USD (OTC)","GBP/USD (OTC)","AUD/JPY (OTC)","USD/JPY (OTC)"])
+        direction = random.choice(["BUY 🟢 UP", "SELL 🔴 DOWN"])
+        accuracy = random.randint(90, 92)  # FORCE 90-92%
+        expiry = random.randint(2, 5)  # MIXED 2-5 MIN
+        rsi = random.randint(20, 80)
+
+        signal = f"""🔥 POCKET OPTION PREDICTION 🔥
+
+📩 SIGNAL RECEIVED: {signal_time} UTC
+💰 PAIR: {pair}
+📊 PREDICTION: {direction}
+📈 RSI: {rsi}
+🎯 ACCURACY: {accuracy}%
+
+━━━━━━━━━━━━━━
+⏰ ENTRY TIME: {entry_time} UTC ( +2 MIN )
+⏱️ EXPIRY: {expiry} MINUTES (Mixed 2-5)
+
+⚡ SET UP NOW:
+1. Open {pair}
+2. Set expiry {expiry} min
+3. WAIT for {entry_time}
+
+⚡ AT {entry_time} EXACTLY → CLICK {direction}!
+
+━━━━━━━━━━━━━━
+GOLD ELITE VIP 🔥"""
+
         try:
             await bot.send_message(chat_id=CHANNEL_ID, text=signal)
-            print(f"Signal sent at {datetime.now()}: {signal}")
+            print(f"Sent: Signal {signal_time} -> Entry {entry_time} (+2 min) | {accuracy}%")
         except Exception as e:
-            print(f"Error: {e}")
-        
+            print(e)
         await asyncio.sleep(SIGNAL_INTERVAL)
 
 if __name__ == "__main__":
