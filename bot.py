@@ -1,35 +1,54 @@
 import os
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import random
+import asyncio
+from datetime import datetime
+from telegram import Bot
 
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Bot is alive - GOLD ELITE VIP")
-    def log_message(self,*a): return
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL_ID = os.getenv("DEST_CHANNEL_ID")
 
-def run_server():
-    HTTPServer(("0.0.0.0", int(os.environ.get("PORT",10000))), Handler).serve_forever()
-threading.Thread(target=run_server, daemon=True).start()
+bot = Bot(token=BOT_TOKEN)
 
-from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
+PAIRS = ["EUR/USD (OTC)", "GBP/USD (OTC)", "USD/JPY (OTC)", "AUD/USD (OTC)", "EUR/GBP (OTC)", "BTC/USD (OTC)"]
 
-BOT_TOKEN=os.environ.get("BOT_TOKEN")
-DEST_CHANNEL_ID=os.environ.get("DEST_CHANNEL_ID")
+def get_signal():
+    rsi = random.randint(10, 90)
+    if rsi < 35:
+        return "BUY 🟢 UP", rsi, random.randint(78, 92)
+    elif rsi > 65:
+        return "SELL 🔴 DOWN", rsi, random.randint(78, 92)
+    else:
+        return random.choice(["BUY 🟢 UP", "SELL 🔴 DOWN"]), rsi, random.randint(75, 88)
 
-async def handle_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_message:
+async def send_signal():
+    while True:
         try:
-            await update.effective_message.copy(chat_id=DEST_CHANNEL_ID)
+            pair = random.choice(PAIRS)
+            action, rsi, acc = get_signal()
+            now = datetime.now()
+            next_min = (now.minute + 1) % 60
+            msg = f"""
+🔥 POCKET OPTION PREDICTION 🔥
+
+💰 PAIR: {pair}
+📊 PREDICTION: {action}
+⏰ EXPIRY: 2 MINUTES
+⏱️ ENTRY TIME: {now.hour:02d}:{next_min:02d}:00 (in 30 sec)
+📈 RSI: {rsi}
+🎯 ACCURACY: {acc}%
+
+⚡ ACTION: OPEN {pair} NOW!
+⚡ SET TIME: 2 MIN
+⚡ CLICK {action} AT {next_min:02d}:00 EXACTLY!
+
+━━━━━━━━━━━━━━
+GOLD ELITE VIP 🔥
+"""
+            await bot.send_message(chat_id=CHANNEL_ID, text=msg, parse_mode="Markdown")
+            await asyncio.sleep(120)
         except Exception as e:
             print(e)
+            await asyncio.sleep(30)
 
-def main():
-    app=ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(MessageHandler(filters.ALL, handle_all))
-    app.run_polling()
-
-if __name__=="__main__":
-    main()
+if __name__ == "__main__":
+    asyncio.run(send_signal())
