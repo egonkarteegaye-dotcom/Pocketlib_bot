@@ -11,7 +11,7 @@ TOKEN=os.getenv("BOT_TOKEN")
 CHANNEL_ID=os.getenv("CHANNEL_ID")
 async def main():
  bot=Bot(token=TOKEN)
- await bot.send_message(chat_id=CHANNEL_ID,text="GOLD ELITE VIP - RANDOM EXPIRY LIVE!")
+ await bot.send_message(chat_id=CHANNEL_ID,text="GOLD ELITE VIP - NO AMOUNT FIX LIVE!")
  pairs=["EUR/USD (OTC)","GBP/USD (OTC)","EUR/GBP (OTC)","USD/JPY (OTC)","AUD/USD (OTC)"]
  while True:
   try:
@@ -34,19 +34,17 @@ async def main():
 
 ━━━━━━━━━━━━━━
 ⏰ ENTRY TIME: {ent} UTC
-⏰ That's 1 MINUTE after signal!
 ⏱️ EXPIRY: {expiry} MINUTES
 
 ⚡ SET UP NOW:
 1. Open {pair}
-2. Set amount $1
-3. Set expiry {expiry} min
-4. WAIT for {ent}
+2. Set expiry {expiry} min
+3. WAIT for {ent}
 
 ⚡ AT {ent} EXACTLY → CLICK {pred}!
 
 ━━━━━━━━━━━━━━
-GOLD ELITE VIP 🔥 - Monrovia Time = UTC"""
+GOLD ELITE VIP 🔥"""
    await bot.send_message(chat_id=CHANNEL_ID,text=msg)
    await asyncio.sleep(60)
   except Exception as e:
