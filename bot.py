@@ -16,10 +16,8 @@ async def send_signal():
         signal = random.choice(["BUY 🟢", "SELL 🔴"])
         expiry = random.choice(["1", "2", "3"])
         current_time = datetime.utcnow().strftime("%H:%M:%S")
-        time_analysis = "✅ Strong Momentum\n📈 High Accuracy Setup"
         
-        message = f"""GONKARTEE SON ROBOT 🤖🔥✅
-(POCKET OPTION)
+        message = f"""GONKARTEE SON ROBOT (P-OPT) 🤖🔥✅
 
 🔥 AI PREDICTION 🔥
 💰 PAIR: {symbol}
@@ -27,7 +25,8 @@ async def send_signal():
 ⏰ EXPIRY: {expiry} MIN
 💵 AMOUNT: $1 and up ⬆️
 
-{time_analysis}
+✅ Strong Momentum
+📈 High Accuracy Setup
 
 🕐 TIME: {current_time} UTC
 📊 ACCURACY: 85%+
