@@ -6,59 +6,41 @@ from telegram import Bot
 BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
 CHANNEL_ID = "@YOUR_CHANNEL_OR_ID"
 
-symbols = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/JPY", "GBP/JPY", "USD/CHF", "EUR/GBP", "BTC/USD", "ETH/USD"]
+symbols = [
+"EUR/USD (OTC)", "GBP/USD (OTC)", "USD/JPY (OTC)", "AUD/USD (OTC)",
+"EUR/JPY (OTC)", "GBP/JPY (OTC)", "EUR/GBP (OTC)", "USD/CHF (OTC)",
+"EUR/CHF (OTC)", "AUD/JPY (OTC)", "GBP/AUD (OTC)", "EUR/AUD (OTC)",
+"USD/CAD (OTC)", "NZD/USD (OTC)", "GBP/CAD (OTC)", "EUR/CAD (OTC)",
+"AUD/CAD (OTC)", "CAD/JPY (OTC)", "CHF/JPY (OTC)", "NZD/JPY (OTC)",
+"AUD/CHF (OTC)", "AUD/NZD (OTC)", "CAD/CHF (OTC)", "EUR/NZD (OTC)",
+"GBP/CHF (OTC)", "GBP/NZD (OTC)", "NZD/CAD (OTC)", "NZD/CHF (OTC)",
+"EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/JPY", "GBP/JPY",
+"EUR/GBP", "USD/CHF", "EUR/CHF", "AUD/JPY", "GBP/AUD", "EUR/AUD",
+"USD/CAD", "NZD/USD", "GBP/CAD", "EUR/CAD", "AUD/CAD", "CAD/JPY",
+"BTC/USD (OTC)", "ETH/USD (OTC)", "LTC/USD (OTC)", "BCH/USD (OTC)",
+"XRP/USD (OTC)", "BNB/USD (OTC)", "ADA/USD (OTC)", "DOT/USD (OTC)",
+"DOGE/USD (OTC)", "SOL/USD (OTC)", "BTC/USD", "ETH/USD",
+"GOLD (OTC)", "SILVER (OTC)", "UKOIL (OTC)", "USOIL (OTC)"
+]
 
 async def send_signal():
     bot = Bot(token=BOT_TOKEN)
-    
     while True:
         try:
             symbol = random.choice(symbols)
             is_up = random.choice([True, False])
-            signal = "BUY 🟢⬆️" if is_up else "SELL 🔴⬇️"
-            expiry = random.choice([1, 2, 3])
-            
-            # HIGH ACCURACY 91-97% - WILL SHOW ALWAYS
-            acc = random.randint(91, 97)
-            up_percent = random.randint(88, 96) if is_up else random.randint(7, 15)
-            down_percent = 100 - up_percent
-            
+            signal = "BUY 🟢 UP" if is_up else "SELL 🔴 DOWN"
+            rsi = random.randint(25, 42) if is_up else random.randint(61, 84)
+            acc = random.randint(90, 92)
+            expiry = 1
             now = datetime.datetime.utcnow()
             entry_time = now + datetime.timedelta(minutes=1)
-            current_str = now.strftime("%H:%M:%S")
-            entry_str = entry_time.strftime("%H:%M:%S")
-            
-            msg = f"""GONKARTEE SON GOLD ELITE VIP 🔥✅
+            received_str = now.strftime("%H:%M:%S")
+            entry_str = entry_time.strftime("%H:%M:00")
+            msg = f"""🔥 POCKET OPTION PREDICTION 🔥
 
-🔥 POCKET OPTION PREDICTION 🔥
-💰 PAIR: {symbol} (OTC)
-📊 ACTION: {signal}
-
-📈 ANALYSIS:
-BUY: {up_percent}% 
-SELL: {down_percent}%
-
-⏰ EXPIRY: {expiry} MINUTE
-
-🕐 NOW: {current_str} UTC
-🎯 ENTRY IN 1 MIN: {entry_str} UTC
-
-🎯 ACCURACY: {acc}% - HIGH CONFIDENCE!
-💎 PREMIUM VIP SIGNAL
-
-⚡ GET READY - ENTER AT {entry_str}!
-🔥 POWERED BY GONKARTEE SON
-"""
-            
-            await bot.send_message(chat_id=CHANNEL_ID, text=msg)
-            print(f"Signal sent: {symbol} {signal} Accuracy {acc}%")
-            
-            # Every 1 MINUTE
-            await asyncio.sleep(60)
-            
-        except Exception as e:
-            print(f"Error: {e}")
-            await asyncio.sleep(10)
-
-if __name__ == "__main__":
-    asyncio.run(send_signal())
+📩 RECEIVED: {received_str} UTC
+💰 PAIR: {symbol}
+📊 PREDICTION: {signal}
+📈 RSI: {rsi}
+🎯 ACC
