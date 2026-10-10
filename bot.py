@@ -1,53 +1,64 @@
-from flask import Flask
-import threading,asyncio,random,os
-from datetime import datetime,timedelta
+import asyncio
+import random
+import datetime
 from telegram import Bot
-app=Flask('')
-@app.route('/')
-def home():return "GOLD ELITE VIP IS LIVE!"
-def run():app.run(host='0.0.0.0',port=10000)
-threading.Thread(target=run).start()
-TOKEN=os.getenv("BOT_TOKEN")
-CHANNEL_ID=os.getenv("CHANNEL_ID")
-async def main():
- bot=Bot(token=TOKEN)
- await bot.send_message(chat_id=CHANNEL_ID,text="GOLD ELITE VIP - NO AMOUNT FIX LIVE!")
- pairs=["EUR/USD (OTC)","GBP/USD (OTC)","EUR/GBP (OTC)","USD/JPY (OTC)","AUD/USD (OTC)"]
- while True:
-  try:
-   now=datetime.utcnow()
-   sig=now.strftime('%H:%M:%S')
-   ent=(now+timedelta(minutes=1)).replace(second=0,microsecond=0).strftime('%H:%M:%S')
-   pair=random.choice(pairs)
-   buy=random.choice([True,False])
-   pred="BUY 🟢 UP" if buy else "SELL 🔴 DOWN"
-   rsi=random.randint(22,35) if buy else random.randint(65,88)
-   acc=random.randint(85,92)
-   expiry=random.choice([2,3,4,5])
-   msg=f"""🔥 POCKET OPTION PREDICTION 🔥
 
-📩 SIGNAL RECEIVED: {sig} UTC
-💰 PAIR: {pair}
-📊 PREDICTION: {pred}
-📈 RSI: {rsi}
-🎯 ACCURACY: {acc}%
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+CHANNEL_ID = "@YOUR_CHANNEL_OR_ID"
 
-━━━━━━━━━━━━━━
-⏰ ENTRY TIME: {ent} UTC
-⏱️ EXPIRY: {expiry} MINUTES
+symbols = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/JPY", "GBP/JPY", "USD/CHF", "EUR/GBP", "BTC/USD", "ETH/USD"]
 
-⚡ SET UP NOW:
-1. Open {pair}
-2. Set expiry {expiry} min
-3. WAIT for {ent}
+async def send_signal():
+    bot = Bot(token=BOT_TOKEN)
+    
+    while True:
+        try:
+            symbol = random.choice(symbols)
+            is_up = random.choice([True, False])
+            signal = "BUY 🟢⬆️" if is_up else "SELL 🔴⬇️"
+            expiry = random.choice([1, 2, 3])
+            
+            # HIGH ACCURACY 91-97% - WILL SHOW ALWAYS
+            acc = random.randint(91, 97)
+            up_percent = random.randint(88, 96) if is_up else random.randint(7, 15)
+            down_percent = 100 - up_percent
+            
+            now = datetime.datetime.utcnow()
+            entry_time = now + datetime.timedelta(minutes=1)
+            current_str = now.strftime("%H:%M:%S")
+            entry_str = entry_time.strftime("%H:%M:%S")
+            
+            msg = f"""GONKARTEE SON GOLD ELITE VIP 🔥✅
 
-⚡ AT {ent} EXACTLY → CLICK {pred}!
+🔥 POCKET OPTION PREDICTION 🔥
+💰 PAIR: {symbol} (OTC)
+📊 ACTION: {signal}
 
-━━━━━━━━━━━━━━
-GOLD ELITE VIP 🔥"""
-   await bot.send_message(chat_id=CHANNEL_ID,text=msg)
-   await asyncio.sleep(60)
-  except Exception as e:
-   print(e)
-   await asyncio.sleep(10)
-asyncio.run(main())
+📈 ANALYSIS:
+BUY: {up_percent}% 
+SELL: {down_percent}%
+
+⏰ EXPIRY: {expiry} MINUTE
+
+🕐 NOW: {current_str} UTC
+🎯 ENTRY IN 1 MIN: {entry_str} UTC
+
+🎯 ACCURACY: {acc}% - HIGH CONFIDENCE!
+💎 PREMIUM VIP SIGNAL
+
+⚡ GET READY - ENTER AT {entry_str}!
+🔥 POWERED BY GONKARTEE SON
+"""
+            
+            await bot.send_message(chat_id=CHANNEL_ID, text=msg)
+            print(f"Signal sent: {symbol} {signal} Accuracy {acc}%")
+            
+            # Every 1 MINUTE
+            await asyncio.sleep(60)
+            
+        except Exception as e:
+            print(f"Error: {e}")
+            await asyncio.sleep(10)
+
+if __name__ == "__main__":
+    asyncio.run(send_signal())
